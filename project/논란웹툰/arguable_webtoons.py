@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import requests
 import csv
 import datetime
-# 1.0.2 : 폴더 위치 변경
+# 1.0.2 : 폴더 위치 변경....
 options = webdriver.ChromeOptions()
 options.headless=True
 options.add_argument("window-size=2560x1600")
