@@ -4,10 +4,13 @@ import requests
 import csv
 import datetime
 
-headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36", "Accept-Language": "ko-KR,ko"}
+options = webdriver.ChromeOptions()
+options.headless=True
+options.add_argument("window-size=2560x1600")
+options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36")
+driver = webdriver.Chrome(options=options) # 1.0.1 : headless chrome 구현
 
 url = "https://comic.naver.com/webtoon/weekday.nhn"
-driver = webdriver.Chrome()
 driver.get(url)
 driver.minimize_window()
 soup = BeautifulSoup(driver.page_source, "lxml")
@@ -23,7 +26,7 @@ def find_rate(cartoon_link): # 평점의 평균을 반환하는 함수
     a = 0
     latest_rate = 0
     cnt = 0
-    res = requests.get(cartoon_link, headers=headers)
+    res = requests.get(cartoon_link)
     res.raise_for_status()
     soup = BeautifulSoup(res.text, "lxml")
     rating_box = soup.find_all("div", attrs={"class":"rating_type"})
@@ -60,7 +63,7 @@ for webtoon in webtoon_info:
     rate_difference = rate_list[0]-rate_list[1]
     webtoon_head = rate_list[2]
     
-    if rate_difference <= -0.5 or rate_list[0] < 9:
+    if rate_difference <= -0.5 or rate_list[0] < 8: # 1.0.1 : 평점 차이와 관련 없이 평점이 8 미만이어도 잡아내도록 설정
         print(webtoon_title, ":", webtoon_link)
         print("     별점 차이: %.2f" %(rate_list[0]-rate_list[1]))
         comments = find_comments(webtoon_link)
