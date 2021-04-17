@@ -8,7 +8,7 @@ driver.get(url)
 driver.find_element_by_class_name("pgRR").click()
 pages = int(driver.current_url[-2:]) # 전체 페이지 수
 
-f = open("result.txt", "w")
+f = open("result.txt", "w", encoding="utf-8-sig") # 1.0.3 : VSC를 통해 txt 파일 열 때, 깨지는 현상 개선
 
 cnt = 0
 
@@ -33,9 +33,9 @@ try: # 1.0.2 : 원하는 가격대의 종목을 확인할 수 있도록 하는 �
                     continue
                 cnt += 1
                 string = f"""
-{info_tuple[0]}. {info_tuple[1]}
+{info_tuple[0]+1}. {info_tuple[1]}
 {info_tuple[2]}원, 거래량: {info_tuple[3]}
-""" + "-"*100 + "\n"
+""" + "-"*100 + "\n" # 1.0.3 : 개수 세는 것 1부터 시작하게 재설정
                 print(string, end="")
                 f.write(string)
 
