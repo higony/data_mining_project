@@ -60,7 +60,7 @@ for webtoon in webtoon_info:
     rate_difference = rate_list[0]-rate_list[1]
     webtoon_head = rate_list[2]
     
-    if rate_difference <= -0.5:
+    if rate_difference <= -0.5 or rate_list[0] < 9:
         print(webtoon_title, ":", webtoon_link)
         print("     별점 차이: %.2f" %(rate_list[0]-rate_list[1]))
         comments = find_comments(webtoon_link)
