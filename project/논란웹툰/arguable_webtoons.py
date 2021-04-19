@@ -71,4 +71,5 @@ for webtoon in webtoon_info:
         writer.writerow(info)
         print("*"*100)
 
+f.close()
 driver.quit()
