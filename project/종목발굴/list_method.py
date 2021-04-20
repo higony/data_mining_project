@@ -1,12 +1,30 @@
 from bs4 import BeautifulSoup
 # 1.1.0 : 종목 정보가 포함된 list를 다루는 메소드 모음.
+
+def sort_list(li): # 1.1.3 : 리스트 정렬하는 기능 구현
+    try:
+        print("분류하고자 하는 기준을 설정해주세요.")
+        print("1. 종목명\t2.현재가\t3.등락율\t4.거래량")
+        selection = int(input(">>>>> 기준 선택 : "))
+        print("오름차순 / 내림차순을 설정합니다. 원하는 옵션을 선택해주세요.")
+        print("1. 오름차순\t2. 내림차순")
+        orderby = int(input(">>>>> 옵션 선택 : "))
+        if orderby == 1:
+            li = sorted(li, key=lambda x:x[selection-1])
+        else: li = sorted(li, key=lambda x:x[selection-1], reverse=True)
+    except:
+        print("오류가 발생하였습니다. 기본 설정으로 정렬합니다.")
+    finally:
+        return li
+    
 def read_list(li):
     # li 안의 각 요소들의 형태 : (종목명, 현재가, 등락, 거래량, 링크)
-    length = len(li)
+    temp_li = sort_list(li)
+    length = len(temp_li)
     print(f"총 {length}개의 검색 결과가 있습니다.")
     for i in range(length):
-        print(f"{i+1}. {li[i][0]} : {li[i][4]}")
-        print(f"현재가 {li[i][1]}원 ({li[i][2]}%)\t거래량 {li[i][3]}")
+        print(f"{i+1}. {temp_li[i][0]} : {temp_li[i][4]}")
+        print(f"현재가 {temp_li[i][1]}원 ({temp_li[i][2]}%)\t거래량 {temp_li[i][3]}")
         print("-"*100)
 
 def initialize(driver): # 1.1.1 : 초기화 함수 구현
