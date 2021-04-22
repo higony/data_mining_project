@@ -55,7 +55,6 @@ def stock_list_by_purchase(li, selection): # selection = 1이면 외인, 2면 �
     
     for elem in li:
         res = requests.get(elem[4])
-        print(elem[0])
         res.raise_for_status()
         soup = BeautifulSoup(res.text, "lxml")
 
