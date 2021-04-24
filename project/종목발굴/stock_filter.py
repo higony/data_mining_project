@@ -44,6 +44,10 @@ def stock_list_by_amount(li):
 
 # 1.1.4 : 외인 / 기관 연일 순매수 필터 기능 추가
 def stock_list_by_purchase(li, selection): # selection = 1이면 외인, 2면 기관 매수
+    num = 10
+    init_percentage = float(len(li)) / num
+    percentage = init_percentage
+    cnt = 0
     if selection == 1:
         col_num = 2
     else: col_num = 3
@@ -54,6 +58,7 @@ def stock_list_by_purchase(li, selection): # selection = 1이면 외인, 2면 �
         return
     
     for elem in li:
+        cnt += 1
         res = requests.get(elem[4])
         res.raise_for_status()
         soup = BeautifulSoup(res.text, "lxml")
@@ -73,5 +78,49 @@ def stock_list_by_purchase(li, selection): # selection = 1이면 외인, 2면 �
                 day = purchase_days - 1
             if day == purchase_days - 1:
                 result.append(elem)
+        # 1.1.5 : 시간이 오래걸리는 기능에 대해 각 퍼센트별로 진행 상황 브리핑 기능 추가
+        if cnt >= percentage:
+            print(f"{num}% 검색을 완료하였습니다.")
+            num += 10
+            percentage += init_percentage
     finalize(result)
     return result
+
+# 1.1.5 : 스팩, ETF, ETN 제외 필터 추가
+def stock_list_by_eliminating(li, driver):
+    url_list = [
+        'https://finance.naver.com/sise/etf.nhn',
+        'https://finance.naver.com/sise/etn.nhn',
+        'https://finance.naver.com/search/searchList.nhn?query=%BD%BA%C6%D1'
+    ]
+    print("제외하고자 하는 종목의 분류를 선택해주세요.")
+    selection = int(input("1. ETF\n2. ETN\n3. 스팩\n>>>>>선택하기: "))
+    eleminating_url = url_list[selection-1]
+    eleminating_list = []
+    if selection == 3:
+        res = requests.get(eleminating_url)
+        res.raise_for_status()
+        soup = BeautifulSoup(res.text, "lxml")
+        pages = len(soup.find("div", attrs={"class":"paging"}).find_all("a"))
+        for page in range(1,pages+1):
+            res = requests.get(eleminating_url + f"&page={page}")
+            res.raise_for_status()
+            soup = BeautifulSoup(res.text, "lxml")
+            title_list = soup.find_all("td", attrs={"class":"tit"})
+            for title_info in title_list:
+                title = title_info.get_text().strip()
+                eleminating_list.append(title)
+    
+    else:
+        driver.get(eleminating_url)
+        soup = BeautifulSoup(driver.page_source, "lxml")
+        title_list = soup.find_all("td", attrs={"class":"ctg"})
+        for title_info in title_list:
+            title = title_info.get_text().strip()
+            eleminating_list.append(title)
+    for idx, elem in enumerate(li):
+        if elem[0] not in eleminating_list:
+            continue
+        del li[idx]
+    finalize(li)
+    return li
