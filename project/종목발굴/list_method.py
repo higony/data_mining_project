@@ -28,6 +28,8 @@ def read_list(li):
         print("-"*100)
 
 def initialize(driver): # 1.1.1 : 초기화 함수 구현
+    # 1.1.6 : 초기화 멘트 메소드 내 출력하도록 수정
+    print("초기화 중입니다.")
     li = [] # 각 종목별 종목명, 현재가, 등락, 거래량, 링크를 가져오고자 함.
     for sosok in range(2):
         default_url = f"https://finance.naver.com/sise/sise_market_sum.nhn?sosok={sosok}"
@@ -48,6 +50,7 @@ def initialize(driver): # 1.1.1 : 초기화 함수 구현
                 amount = int(info[9].replace(",",""))
                 info_tuple = (title, current_price, percentage, amount, link)
                 li.append(info_tuple)
+    print("초기화를 완료했습니다.")
     return li
 
 

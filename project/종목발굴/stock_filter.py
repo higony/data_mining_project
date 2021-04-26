@@ -4,6 +4,9 @@
 # 1.1.4 : 외인 / 기관 연일 순매수 필터 기능 추가
 import requests
 from bs4 import BeautifulSoup
+from datetime import datetime
+from datetime import timedelta
+import json
 
 def finalize(li):
     print("검색을 종료합니다. ", end="")
@@ -124,3 +127,38 @@ def stock_list_by_eliminating(li, driver):
         del li[idx]
     finalize(li)
     return li
+
+# 1.1.6 : 등락율을 기준으로 필터링하는 기능 추가.
+def stock_list_by_raise(li):
+    today = datetime.today()
+    today_str = today.strftime("%Y%m%d")
+    days = int(input("며칠 사이의 등락율을 검색하실지 입력해주세요. "))
+    criteria_day = today - timedelta(days=days)
+    criteria_day_str = criteria_day.strftime("%Y%m%d")
+
+    minimum_raise = float(input("조회를 원하는 종목의 최소 등락율을 입력해주세요. (마이너스 가능): "))
+    maximum_raise = float(input("조회를 원하는 종목의 최대 등락율을 입력해주세요. (마이너스 가능): "))
+
+    result = []
+
+    for elem in li:
+        code = elem[4][-6:]
+        url = f"https://api.finance.naver.com/siseJson.naver?symbol={code}&requestType=1&startTime={criteria_day_str}&endTime={today_str}&timeframe=day"
+        res = requests.get(url)
+        res.raise_for_status()
+        soup = BeautifulSoup(res.text, "lxml")
+
+        text = soup.get_text().replace(", ",",").split()
+        temp_prices = [text[1], text[-2]]
+        raises = []
+        for x in temp_prices:
+            price = int(x.split(",")[4])
+            raises.append(price)
+        percentage = (float(raises[1] - raises[0]) / raises[0]) * 100
+        if percentage >= minimum_raise and percentage <= maximum_raise:
+            result.append(elem)
+    finalize(result)
+    return result
+
+    # ", " -> ","로 replace한 뒤, split 진행 -> 1, -2번째 인덱스를 기준으로 비교.
+    # 각 요소들에서 []기호를 빼고 ","기준으로 split. 이때 기준 4번째 idx가 종가.
