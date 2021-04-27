@@ -10,18 +10,6 @@ options.add_argument("window-size=2560x1600")
 options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36")
 driver = webdriver.Chrome(options=options) # 1.0.1 : headless chrome 구현
 
-url = "https://comic.naver.com/webtoon/weekday.nhn"
-driver.get(url)
-driver.minimize_window()
-soup = BeautifulSoup(driver.page_source, "lxml")
-
-filename = "논란웹툰정리.csv"
-f = open(filename, "a", encoding="utf-8-sig", newline="")
-writer = csv.writer(f)
-
-today = datetime.date.today()
-today_str = f"{today.year}-{today.month}-{today.day}"
-
 def find_rate(cartoon_link): # 평점의 평균을 반환하는 함수 
     a = 0
     latest_rate = 0
@@ -52,6 +40,18 @@ def find_comments(webtoon_link):
     result = "\n".join(li)
     return result
 
+url = "https://comic.naver.com/webtoon/weekday.nhn"
+driver.get(url)
+driver.minimize_window()
+soup = BeautifulSoup(driver.page_source, "lxml")
+
+filename = "논란웹툰정리.csv"
+f = open(filename, "a", encoding="utf-8-sig", newline="")
+writer = csv.writer(f)
+
+today = datetime.date.today()
+today_str = f"{today.year}-{today.month}-{today.day}"
+
 
 webtoon_list = soup.find("div", attrs={"class": "col col_selected"})
 webtoon_info = webtoon_list.find_all("a", attrs={"class":"title"})
@@ -64,6 +64,19 @@ for webtoon in webtoon_info:
     webtoon_head = rate_list[2]
     
     if rate_difference <= -0.5 or rate_list[0] < 8: # 1.0.1 : 평점 차이와 관련 없이 평점이 8 미만이어도 잡아내도록 설정
+        # 1.0.3 : 휴재 웹툰은 제외하도록 알고리즘 설정
+        res = requests.get(webtoon_link)
+        soup = BeautifulSoup(res.text, "lxml")
+        dates = [x.get_text() for x in soup.find_all("td", attrs={"class":"num"})[:2]]
+        today = datetime.datetime(today.year, today.month, today.day)
+        for idx, elem in enumerate(dates):
+            elem = elem.split(".")
+            elem = datetime.datetime(int(elem[0]), int(elem[1]), int(elem[2]))
+            dates[idx] = elem
+        if len(dates) < 2:
+            pass
+        elif today-dates[0] > dates[0]-dates[1]:
+            continue
         print(webtoon_title, ":", webtoon_link)
         print("     별점 차이: %.2f" %(rate_list[0]-rate_list[1]))
         comments = find_comments(webtoon_link)
