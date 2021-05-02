@@ -6,7 +6,6 @@ import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
 from datetime import timedelta
-import json
 
 def finalize(li):
     print("검색을 종료합니다. ", end="")
@@ -90,6 +89,7 @@ def stock_list_by_purchase(li, selection): # selection = 1이면 외인, 2면 �
     return result
 
 # 1.1.5 : 스팩, ETF, ETN 제외 필터 추가
+# 1.1.7 : 정확도 100%로 설정하기 위해 반복문 추가.
 def stock_list_by_eliminating(li, driver):
     url_list = [
         'https://finance.naver.com/sise/etf.nhn',
@@ -99,32 +99,25 @@ def stock_list_by_eliminating(li, driver):
     print("제외하고자 하는 종목의 분류를 선택해주세요.")
     selection = int(input("1. ETF\n2. ETN\n3. 스팩\n>>>>>선택하기: "))
     eleminating_url = url_list[selection-1]
-    eleminating_list = []
-    if selection == 3:
-        res = requests.get(eleminating_url)
-        res.raise_for_status()
-        soup = BeautifulSoup(res.text, "lxml")
-        pages = len(soup.find("div", attrs={"class":"paging"}).find_all("a"))
-        for page in range(1,pages+1):
-            res = requests.get(eleminating_url + f"&page={page}")
-            res.raise_for_status()
-            soup = BeautifulSoup(res.text, "lxml")
-            title_list = soup.find_all("td", attrs={"class":"tit"})
+    eleminating_set = set({})
+    for cnt in range(4):
+        if selection == 3:
+            for idx, elem in enumerate(li):
+                if "스팩" in elem[0]:
+                    del li[idx]
+        
+        else:    
+            driver.get(eleminating_url)
+            soup = BeautifulSoup(driver.page_source, "lxml")
+            title_list = soup.find_all("td", attrs={"class":"ctg"})
             for title_info in title_list:
-                title = title_info.get_text().strip()
-                eleminating_list.append(title)
-    
-    else:
-        driver.get(eleminating_url)
-        soup = BeautifulSoup(driver.page_source, "lxml")
-        title_list = soup.find_all("td", attrs={"class":"ctg"})
-        for title_info in title_list:
-            title = title_info.get_text().strip()
-            eleminating_list.append(title)
-    for idx, elem in enumerate(li):
-        if elem[0] not in eleminating_list:
-            continue
-        del li[idx]
+                title = title_info.get_text().strip()[:5]
+                eleminating_set.add(title)
+
+            for idx, elem in enumerate(li):
+                if elem[0][:5] in eleminating_set:
+                    del li[idx]
+
     finalize(li)
     return li
 
