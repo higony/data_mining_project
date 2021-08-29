@@ -62,7 +62,6 @@ for webtoon in webtoon_info:
     rate_list = find_rate(webtoon_link)
     rate_difference = rate_list[0]-rate_list[1]
     webtoon_head = rate_list[2]
-    
     if rate_difference <= -0.5 or rate_list[0] < 8: # 1.0.1 : 평점 차이와 관련 없이 평점이 8 미만이어도 잡아내도록 설정
         # 1.0.3 : 휴재 웹툰은 제외하도록 알고리즘 설정
         res = requests.get(webtoon_link)
