@@ -59,11 +59,14 @@ def favorite_read(filename):
     try:
         with open(filename, "r") as f:
             li = sorted(list(set(f.readlines())))
-            print("\n즐겨찾는 언론사 목록")
-            for idx, elem in enumerate(li):
-                print(f"{idx+1}. {elem}", end="")
+            if len(li) == 0:
+                print("즐겨찾기한 언론사가 없습니다.\n")
+            else:
+                print("\n즐겨찾는 언론사 목록")
+                for idx, elem in enumerate(li):
+                    print(f"{idx+1}. {elem}", end="")
     except:
-        print("즐겨찾기한 언론사가 없습니다.\n")
+        print("즐겨찾기한 언론사가 없거나, 파일이 손상되었습니다..\n")
 
 # 1.0.1 즐겨찾기 삭제 기능
 def favorite_delete(filename):

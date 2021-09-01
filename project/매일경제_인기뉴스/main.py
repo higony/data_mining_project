@@ -47,3 +47,7 @@ while True:
             favorite_read(filename)
         elif selection == 3:
             favorite_delete(filename)
+    
+    # 1.0.2 즐겨찾는 언론사 기사 모아보는 기능 추가
+    elif selection == 3:
+        news_print(favorite_news_scrap(soup,filename))
