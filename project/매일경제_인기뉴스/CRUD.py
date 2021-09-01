@@ -48,7 +48,7 @@ def favorite_add(press_list, filename):
 
             try:
                 with open(filename, "a") as f:
-                    f.write(f"{result_list[selection-1]}\n")
+                    f.write(f"{result_list[selection-1]} ")
                 print("성공적으로 즐겨찾기에 저장되었습니다.")
             except:
                 print("잘못된 번호를 입력하셨습니다.")
@@ -58,13 +58,13 @@ def favorite_add(press_list, filename):
 def favorite_read(filename):
     try:
         with open(filename, "r") as f:
-            li = sorted(list(set(f.readlines())))
+            li = sorted(list(set(f.read().split())))
             if len(li) == 0:
                 print("즐겨찾기한 언론사가 없습니다.\n")
             else:
                 print("\n즐겨찾는 언론사 목록")
                 for idx, elem in enumerate(li):
-                    print(f"{idx+1}. {elem}", end="")
+                    print(f"{idx+1}. {elem}")
     except:
         print("즐겨찾기한 언론사가 없거나, 파일이 손상되었습니다..\n")
 
@@ -72,15 +72,15 @@ def favorite_read(filename):
 def favorite_delete(filename):
     try:
         with open(filename, "r") as f:
-            li = sorted(list(set(f.readlines())))
+            li = sorted(list(set(f.read().split())))
         while True:
             if len(li) == 0:
                 print("현재 즐겨찾기 목록이 없습니다.")
                 break
-
+            print(li)
             print("현재 즐겨찾기 한 언론사 목록입니다.")
             for idx, elem in enumerate(li):
-                print(f"{idx+1}. {elem}", end="")
+                print(f"{idx+1}. {elem}")
             selection = int(input("\n삭제를 원하시는 언론사의 번호를 입력해주세요. 종료를 원하시면 0을 입력해주세요. : "))
             if selection == 0:
                 break
@@ -89,7 +89,7 @@ def favorite_delete(filename):
 
         with open(filename, "w") as f:
             for elem in li:
-                f.write(f"{elem}\n")
+                f.write(f"{elem} ")
             print("즐겨찾기 수정이 반영되었습니다.\n")
     except:
         print("즐겨찾기한 언론사가 없거나, 잘못된 입력을 하셨습니다.\n")

@@ -30,7 +30,7 @@ def all_news_scrap(soup):
 # 1.0.2 즐겨찾는 언론사 기사 스크래핑
 def favorite_news_scrap(soup, filename):
     with open(filename, "r") as f:
-        Mypress = list(set(x.strip() for x in f.readlines()))
+        Mypress = list(set(f.read().split()))
 
     initial_li = all_news_scrap(soup)
     result = []
