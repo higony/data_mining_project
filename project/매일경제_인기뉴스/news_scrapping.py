@@ -1,6 +1,8 @@
 from bs4 import BeautifulSoup
 import requests
 
+# 기사 스크래핑과 관련한 메소드
+
 # 모든 기사 스크래핑
 def all_news_scrap(soup):
     presses = soup.find_all("div", attrs={"class":"rankingnews_box"})
@@ -25,13 +27,3 @@ def all_news_scrap(soup):
 
     return result
 
-# 모든 기사 결과 출력
-def news_print(li):
-    for idx, elem in enumerate(li):
-        print(f"{idx+1}) {elem[0]}")
-
-        for k in range(len(elem[1])):
-            print(f"  {k+1}. {elem[1][k]}")
-            print(f"  링크: {elem[2][k]}")
-            print()
-        print("-"*50, end="\n\n")
