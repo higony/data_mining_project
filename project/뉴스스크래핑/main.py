@@ -4,6 +4,8 @@ import requests
 from news_scrapping import *
 from CRUD import *
 
+# 1.0.3 출력 form 개선
+
 # 기본 설정
 headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36"} # 헤더 정보
 # driver = webdriver.Chrome()
@@ -22,12 +24,13 @@ filename = "Mypress.txt" # 즐겨찾기 할 파일 이름
 
 # 1.0.0 선택기능 : 언론사별 인기 뉴스
 while True:
-    print("기능을 설정해주세요\n")
-    print("1. 모든 언론사 top 뉴스 확인하기")
-    print("2. 즐겨찾기 설정 (조회 / 등록 / 삭제)") # 1.0.1 추가 예정
-    print("3. 즐겨찾는 언론사 top 뉴스 확인하기") # 1.0.1 추가 예정
-    print("0. 종료하기")
-    selection = int(input("기능선택>>>>>> "))
+    print("-"*50)
+    print("\n기능을 설정해주세요")
+    print("\n 1. 모든 언론사 top 뉴스 확인하기")
+    print(" 2. 즐겨찾기 설정 (조회 / 등록 / 삭제)") # 1.0.1 추가 예정
+    print(" 3. 즐겨찾는 언론사 top 뉴스 확인하기") # 1.0.1 추가 예정
+    print(" 0. 종료하기")
+    selection = int(input("\n기능선택 >>>>>> "))
 
     if selection == 0:
         break
@@ -37,10 +40,12 @@ while True:
 
     # 1.0.1 즐겨찾기 CRUD 기능 추가
     elif selection == 2:
+        print("-"*50)
+        print("즐겨찾기 관련한 메뉴들입니다. 원하시는 기능을 선택해주세요.")
         print("\n1. 즐겨찾기 등록")
         print("2. 즐겨찾기 조회")
         print("3. 즐겨찾기 삭제")
-        selection = int(input(">>>> 기능 선택: "))
+        selection = int(input("\n>>>> 기능 선택: "))
         if selection == 1:
             favorite_add(press_list, filename)
         elif selection == 2:

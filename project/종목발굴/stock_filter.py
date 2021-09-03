@@ -60,7 +60,6 @@ def stock_list_by_purchase(li, selection): # selection = 1이면 외인, 2면 �
         return
     
     for elem in li:
-        print(elem[0])
         cnt += 1
         res = requests.get(elem[4])
         res.raise_for_status()
