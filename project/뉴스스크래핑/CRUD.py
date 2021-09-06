@@ -1,4 +1,5 @@
 # 스크래핑과 관련 없는, CRUD와 관련된 함수들
+import csv
 
 # 모든 기사 결과 출력
 def news_print(li):
@@ -95,3 +96,10 @@ def favorite_delete(filename):
             print("즐겨찾기 수정이 반영되었습니다.\n")
     except:
         print("\n즐겨찾기한 언론사가 없거나, 잘못된 입력을 하셨습니다.\n")
+
+# 1.1.0 csv 저장 기능
+def save_csv(li, date, writer):
+    for elem in li:
+        for idx in range(len(elem[1])):
+            data = [date, elem[0], elem[1][idx], elem[2][idx]]
+            writer.writerow(data)
