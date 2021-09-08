@@ -11,9 +11,9 @@ driver = webdriver.Chrome()
 initialized_li = initialize(driver)
 li = initialized_li
 
-
 while True:
-    print("원하시는 필터 적용 및 기능을 선택해주세요.")
+    print("-"*50)
+    print("\n원하시는 필터 적용 및 기능을 선택해주세요.")
     print("1. 가격별 필터")
     # 1.1.2 : 거래량 기준 필터 기능 추가
     print("2. 거래량 별 필터")
@@ -27,7 +27,7 @@ while True:
     print("7. 필터 초기화")
     print("8. 필터링 된 종목 조회")
     print("0. 종료")
-    selection = int(input("기능 선택 >>>>>>> "))
+    selection = int(input("select >>>> "))
 
 
     if selection == 0:
@@ -46,7 +46,8 @@ while True:
         li = stock_list_by_raise(li)
     elif selection == 7:
         # 1.1.6 : 실시간 정보로 수정할 수 있게 변경.
-        li = initialize(driver)
+        initialized_li = initialize(driver)
+        li = initialized_li
         print("초기화가 완료되었습니다.")
     elif selection == 8:
         read_list(li)
