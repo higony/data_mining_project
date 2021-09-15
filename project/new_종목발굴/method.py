@@ -1,14 +1,8 @@
-from selenium import webdriver
 from bs4 import BeautifulSoup
 import requests
 
 from model import *
 
-options = webdriver.ChromeOptions()
-options.headless=True
-options.add_argument("window-size=2560x1600")
-options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36")
-driver = webdriver.Chrome(options=options)
 
 def initialize():
     result = []
@@ -39,3 +33,41 @@ def initialize():
                 result.append(stock(name, price, updown, amount, link))
 
     return result
+
+# 1.0.1: 외인/기관 연속 순매수일 계산
+def cal_purchase(li):
+    for elem in li:
+        res = requests.get(elem.link)
+        res.raise_for_status()
+        soup = BeautifulSoup(res.text, "lxml")
+
+        rows = soup.find("div", attrs={"class":"sub_section right"}).tbody.find_all("tr")[1:-1]
+        
+        p_f = 0
+        f_switch = 1
+        p_i = 0
+        i_switch = 1
+        for day in range(len(rows)):
+            if f_switch == i_switch == 0:
+                break
+            day_info = rows[day].find_all("td")[2:]
+
+            try:
+                if f_switch != 0:
+                    if int(day_info[0].get_text().replace(",","")) > 0:
+                        p_f += 1
+                    else:
+                        f_switch = 0
+            except:
+                f_switch = 0
+
+            try:
+                if i_switch != 0:
+                    if int(day_info[1].get_text().replace(",","")) > 0:
+                        p_i += 1
+                    else:
+                        i_switch = 0
+            except:
+                i_switch = 0
+        elem.input_purchase((p_f, p_i))
+    return li
