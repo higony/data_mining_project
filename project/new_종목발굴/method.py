@@ -70,4 +70,13 @@ def cal_purchase(li):
             except:
                 i_switch = 0
         elem.input_purchase((p_f, p_i))
+
+        # 1.0.2 비고란에 적어주도록 프로그램 설계
+        if p_f >= 3 and p_i >= 3:
+            if p_f >= 5 and p_i < 5:
+                elem.comment = "외인 주도 쌍끌이 매수세 포착"
+            elif p_i >= 5 and p_f < 5:
+                elem.comment = "기관 주도 쌍끌이 매수세 포착"
+            elif p_f >= 5 and p_i >= 5:
+                elem.comment = "강한 쌍끌이 매수세 포착"
     return li
