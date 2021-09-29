@@ -18,6 +18,7 @@ default_link = "https://finance.naver.com/item/main.naver?code="
 
 
 # 0일, 5일, 20일, 60일, 120일에 대한 종목 정보를 일괄적으로 저장하기
+# 1.0.4 등락율에 100 곱하여 백분율의 형태로 저장
 def saveCSV(li):
     saveCSV_120()
     saveCSV_60()
@@ -46,7 +47,7 @@ def saveCSV_5(): # 단기
                     res = requests.get(url)
                     soup = BeautifulSoup(res.text, "lxml")
                     price_now = int(soup.find("p", attrs={"class":"no_today"}).find("span", attrs={"class":"blind"}).get_text().replace(",",""))
-                    updown = (price_now - int(line[3]))/float(int(line[3]))
+                    updown = (price_now - int(line[3]))/float(int(line[3])) * 100
                     
                     line.extend([price_now, updown])
                     writer.writerow(line)
@@ -64,7 +65,7 @@ def saveCSV_10(): # 중단기
                     res = requests.get(url)
                     soup = BeautifulSoup(res.text, "lxml")
                     price_now = int(soup.find("p", attrs={"class":"no_today"}).find("span", attrs={"class":"blind"}).get_text().replace(",",""))
-                    updown = (price_now - int(line[3]))/float(int(line[3]))
+                    updown = (price_now - int(line[3]))/float(int(line[3])) * 100
                     
                     line.extend([price_now, updown])
                     writer.writerow(line)
@@ -82,7 +83,7 @@ def saveCSV_20(): # 중기
                     res = requests.get(url)
                     soup = BeautifulSoup(res.text, "lxml")
                     price_now = int(soup.find("p", attrs={"class":"no_today"}).find("span", attrs={"class":"blind"}).get_text().replace(",",""))
-                    updown = (price_now - int(line[3]))/float(int(line[3]))
+                    updown = (price_now - int(line[3]))/float(int(line[3])) * 100
                     
                     line.extend([price_now, updown])
                     writer.writerow(line)
@@ -100,7 +101,7 @@ def saveCSV_60(): # 중장기
                     res = requests.get(url)
                     soup = BeautifulSoup(res.text, "lxml")
                     price_now = int(soup.find("p", attrs={"class":"no_today"}).find("span", attrs={"class":"blind"}).get_text().replace(",",""))
-                    updown = (price_now - int(line[3]))/float(int(line[3]))
+                    updown = (price_now - int(line[3]))/float(int(line[3])) * 100
                     
                     line.extend([price_now, updown])
                     writer.writerow(line)
@@ -118,7 +119,7 @@ def saveCSV_120(): # 장기
                     res = requests.get(url)
                     soup = BeautifulSoup(res.text, "lxml")
                     price_now = int(soup.find("p", attrs={"class":"no_today"}).find("span", attrs={"class":"blind"}).get_text().replace(",",""))
-                    updown = (price_now - int(line[3]))/float(int(line[3]))
+                    updown = (price_now - int(line[3]))/float(int(line[3])) * 100
                     
                     line.extend([price_now, updown])
                     writer.writerow(line)
