@@ -19,6 +19,7 @@ default_link = "https://finance.naver.com/item/main.naver?code="
 
 # 0일, 5일, 20일, 60일, 120일에 대한 종목 정보를 일괄적으로 저장하기
 # 1.0.4 등락율에 100 곱하여 백분율의 형태로 저장
+# 1.0.5 csv의 가장 첫 행에 머리글 입력
 def saveCSV(li):
     saveCSV_120()
     saveCSV_60()
@@ -31,6 +32,7 @@ def saveCSV(li):
 def saveCSV_0(li):
     with open(f"{path}\\0\\{today_str}.csv", "w", encoding="utf-8-sig", newline="") as f:
         writer = csv.writer(f)
+        writer.writerow(["저장 사유", "종목명", "종목코드", "종가_0"])
         for elem in li:
             data = [save_reason.index(elem[0]), elem[1], elem[2], elem[3]]
             writer.writerow(data)
@@ -42,6 +44,7 @@ def saveCSV_5(): # 단기
             with open(f"{path}\\5\\{li[len(li)-5][:-4]}_5.csv", "w", encoding="utf-8-sig", newline="") as f_w:
                 reader = csv.reader(f)
                 writer = csv.writer(f_w)
+                writer.writerow(["저장 사유", "종목명", "종목코드", "종가_0", "종가_5", "등락율"])
                 for line in reader:
                     url = default_link + line[2]
                     res = requests.get(url)
@@ -59,6 +62,7 @@ def saveCSV_10(): # 중단기
             with open(f"{path}\\10\\{li[len(li)-5][:-4]}_10.csv", "w", encoding="utf-8-sig", newline="") as f_w:
                 reader = csv.reader(f)
                 writer = csv.writer(f_w)
+                writer.writerow(["저장 사유", "종목명", "종목코드", "종가_0", "종가_5", "종가_10", "등락율"])
                 for line in reader:
                     del line[-1]
                     url = default_link + line[2]
@@ -77,6 +81,7 @@ def saveCSV_20(): # 중기
             with open(f"{path}\\20\\{li[len(li)-10][:-4]}_20.csv", "w", encoding="utf-8-sig", newline="") as f_w:
                 reader = csv.reader(f)
                 writer = csv.writer(f_w)
+                writer.writerow(["저장 사유", "종목명", "종목코드", "종가_0", "종가_5", "종가_10", "종가_20", "등락율"])
                 for line in reader:
                     del line[-1]
                     url = default_link + line[2]
@@ -95,6 +100,7 @@ def saveCSV_60(): # 중장기
             with open(f"{path}\\60\\{li[len(li)-40][:-4]}_60.csv", "w", encoding="utf-8-sig", newline="") as f_w:
                 reader = csv.reader(f)
                 writer = csv.writer(f_w)
+                writer.writerow(["저장 사유", "종목명", "종목코드", "종가_0", "종가_5", "종가_10", "종가_20", "종가_60", "등락율"])
                 for line in reader:
                     del line[-1]
                     url = default_link + line[2]
@@ -113,6 +119,7 @@ def saveCSV_120(): # 장기
             with open(f"{path}\\120\\{li[len(li)-40][:-4]}_120.csv", "w", encoding="utf-8-sig", newline="") as f_w:
                 reader = csv.reader(f)
                 writer = csv.writer(f_w)
+                writer.writerow(["저장 사유", "종목명", "종목코드", "종가_0", "종가_5", "종가_10", "종가_20", "종가_60", "종가_120" "등락율"])
                 for line in reader:
                     del line[-1]
                     url = default_link + line[2]
